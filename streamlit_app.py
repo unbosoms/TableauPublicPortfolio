@@ -74,6 +74,8 @@ with c2:
 #
 #st.write(pd.json_normalize(detail_data))
 
+st.write()
+
 c1, c2, c3 = st.columns(3)
 mom = data[data['title'].apply(lambda x: search_keyword(x,'MoM'))]
 wow = data[data['title'].apply(lambda x: search_keyword(x,'WoW'))]
