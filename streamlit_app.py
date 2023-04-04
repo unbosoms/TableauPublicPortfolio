@@ -86,10 +86,15 @@ otr = data[
              (data['title'].apply(lambda x: search_keyword(x,'WoW')))
           )
         ]
+
+def show_wb(data):
+    st.image('https://public.tableau.com/thumb/views/'+data['defaultViewRepoUrl'])
+    st.write('['+data['title']+'](https://public.tableau.com/app/profile/yuta1985/viz/'+data['defaultViewRepoUrl']+')')
+
 with c1:
     st.subheader('MakeoverMonday')
     st.metric('\# of MoM vizzes', len(mom))
-    mom.apply(lambda x: st.write('['+x['title']+'](https://public.tableau.com/app/profile/yuta1985/viz/'+x['defaultViewRepoUrl']+')'),axis=1)
+    mom.apply(show_wb,axis=1)
 with c2:
     st.subheader('WorkoutWednesday')
     st.metric('\# of WoW vizzes', len(wow))
