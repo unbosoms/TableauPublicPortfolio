@@ -4,9 +4,15 @@ import json
 import requests
 from streamlit_elements import nivo 
 
-#st.set_page_config(layout="wide")
+########################
+# Settings
+########################
 
-profile = 'yuta1985'
+NUM_COLS = 5
+
+st.set_page_config(layout="wide")
+
+PROFILE = 'yuta1985'
 
 # get tableau public data
 @st.cache_data
@@ -16,7 +22,7 @@ def get_data():
     count = 50 # the number of get count is limited to 50
     data = []
     while(True):
-        url = f'https://public.tableau.com/public/apis/workbooks?profileName={profile}&start={start}&count={count}&visibility=NON_HIDDEN'
+        url = f'https://public.tableau.com/public/apis/workbooks?profileName={PROFILE}&start={start}&count={count}&visibility=NON_HIDDEN'
         res = requests.get(url)
         json = res.json()
         start = json["next"]
@@ -27,10 +33,18 @@ def get_data():
 
 @st.cache_data
 def get_profile():
-    url = f'https://public.tableau.com/profile/api/{profile}'
+    url = f'https://public.tableau.com/profile/api/{PROFILE}'
     res = requests.get(url)
     json = res.json()
     return json
+
+def chunks(lst, n):
+    for i in range(0, len(lst), n):
+        yield lst[i:i+n]
+
+def show_wb(data):
+    st.image('https://public.tableau.com/thumb/views/'+data.workbookRepoUrl+'/'+data.defaultViewName)
+    st.write('['+data.title+f'](https://public.tableau.com/app/profile/{PROFILE}/viz/'+data.workbookRepoUrl+'/'+data.defaultViewName+')')
 
 def search_keyword(string,keyword):
     if keyword in string:
@@ -38,73 +52,147 @@ def search_keyword(string,keyword):
     else:
         return False
 
-# sidebar design
-#with st.sidebar:
-    #st.header("aa")
-
+########################
 # get data
+########################
 prof = get_profile()
 data = get_data()
 data = pd.json_normalize(data)
 
-# main design
-st.title("Tableau Pulbic Portfolio")
-
-c1, c2 = st.columns([1,4])
-with c1:
-    st.image(prof['avatarUrl'])
-with c2:
-    st.header(prof['name'])
-    c2_1, c2_2, c2_3 = st.columns(3)
-    with c2_1:
-        st.metric(label="\# of vizzes", value=len(data), label_visibility="visible")
-    with c2_2:
-        st.metric(label="Following", value=prof['totalNumberOfFollowing'])
-    with c2_3:
-        st.metric(label="Followers", value=prof['totalNumberOfFollowers'])
-
-#st.write(data)
-
-#detail_data = []
-#for row in data:
-    #url = 'https://public.tableau.com/profile/api/workbook/'
-    #url += row['workbookRepoUrl']
-    #res = requests.get(url)
-    #detail_data.append(res.json)
-#
-#st.write(pd.json_normalize(detail_data))
-
-st.write()
-
-c1, c2, c3 = st.columns(3)
-mom = data[data['title'].apply(lambda x: search_keyword(x,'MoM'))]
+# make categoraized data
+mom = data[
+        (data['title'].apply(lambda x: search_keyword(x,'MoM')))
+        |
+        (data['title'].apply(lambda x: search_keyword(x,'MOM')))
+        |
+        (data['title'].apply(lambda x: search_keyword(x,'MakeoverMonday')))
+        ]
 wow = data[
         (data['title'].apply(lambda x: search_keyword(x,'WoW')))
         |
         (data['title'].apply(lambda x: search_keyword(x,'WOW')))
+        |
+        (data['title'].apply(lambda x: search_keyword(x,'WorkoutWednesday')))
         ]
 otr = data[
          ~(
              (data['title'].apply(lambda x: search_keyword(x,'MoM')))
              |
+             (data['title'].apply(lambda x: search_keyword(x,'MOM')))
+             |
+             (data['title'].apply(lambda x: search_keyword(x,'MakeoverMonday')))
+             |
              (data['title'].apply(lambda x: search_keyword(x,'WoW')))
+             |
+             (data['title'].apply(lambda x: search_keyword(x,'WOW')))
+             |
+             (data['title'].apply(lambda x: search_keyword(x,'WorkoutWednesday')))
           )
         ]
 
-def show_wb(data):
-    st.image('https://public.tableau.com/thumb/views/'+data['workbookRepoUrl']+'/'+data['defaultViewName'])
-    st.write('['+data['title']+'](https://public.tableau.com/app/profile/yuta1985/viz/'+data['defaultViewRepoUrl']+')')
+########################
+# main design
+########################
+st.title("Tableau Pulbic Portfolio")
 
-with c1:
-    st.markdown('**MakeoverMonday**')
-    st.metric('\# of MoM vizzes', len(mom))
-    mom.apply(show_wb,axis=1)
-with c2:
-    st.markdown('**WorkoutWednesday**')
-    st.metric('\# of WoW vizzes', len(wow))
-    wow.apply(show_wb,axis=1)
-with c3:
-    st.markdown('**Others**')
-    st.metric('\# of other vizzes', len(otr))
-    otr.apply(show_wb,axis=1)
+########################
+# profile & summary
+cols1 = st.columns([2,6,7])
+with cols1[0]:
+    st.write('')
+    st.image(prof['avatarUrl'])
+with cols1[1]:
+    st.header(prof['name'])
+    cols2 = st.columns(3)
+    with cols2[0]:
+        st.metric(label="\# of vizzes", value=len(data), label_visibility="visible")
+    with cols2[1]:
+        st.metric(label="Following", value=prof['totalNumberOfFollowing'])
+    with cols2[2]:
+        st.metric(label="Followers", value=prof['totalNumberOfFollowers'])
+    cols2 = st.columns(3)
+    with cols2[0]:
+        st.metric('\# of MoM vizzes', len(mom))
+    with cols2[1]:
+        st.metric('\# of WoW vizzes', len(wow))
+    with cols2[2]:
+        st.metric('\# of other vizzes', len(otr))
 
+st.write()
+
+########################
+# MakeoverMonday
+if 'mom_limit' not in st.session_state:
+    st.session_state.mom_limit=5
+num_of_mom = len(mom)
+st.header(f'MakeoverMonday ({num_of_mom} vizzes)')
+st.write('')
+
+for i, chunk in enumerate(chunks(list(mom[:st.session_state.mom_limit].itertuples()),NUM_COLS)):
+    cols = st.columns(NUM_COLS, gap="large")
+    for c, col in zip(chunk, cols):
+        with col:
+            show_wb(c)
+def show_more(string):
+    st.session_state[string] += 5
+st.write('')
+st.button('Show more', on_click=show_more('mom_limit'),key=1)
+
+########################
+# WorkoutWednesday
+if 'wow_limit' not in st.session_state:
+    st.session_state.wow_limit=5
+num_of_wow = len(wow)
+st.header(f'WorkoutWednesday({num_of_wow} vizzes)')
+st.write('')
+
+for i, chunk in enumerate(chunks(list(wow[:st.session_state.wow_limit].itertuples()),NUM_COLS)):
+    cols = st.columns(NUM_COLS, gap="large")
+    for c, col in zip(chunk, cols):
+        with col:
+            show_wb(c)
+def show_more(string):
+    st.session_state[string] += 5
+st.write('')
+st.button('Show more', on_click=show_more('wow_limit'),key=2)
+
+########################
+# Others
+if 'otr_limit' not in st.session_state:
+    st.session_state.otr_limit=5
+num_of_otr = len(otr)
+st.header(f'Others({num_of_otr} vizzes)')
+st.write('')
+
+for i, chunk in enumerate(chunks(list(otr[:st.session_state.otr_limit].itertuples()),NUM_COLS)):
+    cols = st.columns(NUM_COLS, gap="large")
+    for c, col in zip(chunk, cols):
+        with col:
+            show_wb(c)
+def show_more(string):
+    st.session_state[string] += 5
+st.write('')
+st.button('Show more', on_click=show_more('otr_limit'),key=3)
+
+########################
+# Search
+st.header(f'Search')
+keyword = st.text_input('')
+if keyword == '':
+    st.write('☝️ Please input search keyword')
+else:
+    ser = data[data['title'].apply(lambda x: keyword in x)]
+    if 'ser_limit' not in st.session_state:
+        st.session_state.ser_limit=5
+    num_of_ser = len(ser)
+    st.write('')
+    
+    for i, chunk in enumerate(chunks(list(ser[:st.session_state.ser_limit].itertuples()),NUM_COLS)):
+        cols = st.columns(NUM_COLS, gap="large")
+        for c, col in zip(chunk, cols):
+            with col:
+                show_wb(c)
+    def show_more(string):
+        st.session_state[string] += 5
+    st.write('')
+    st.button('Show more', on_click=show_more('ser_limit'),key=4)
