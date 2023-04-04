@@ -6,10 +6,12 @@ from streamlit_elements import nivo
 
 st.set_page_config(layout="wide")
 
+profile = 'yuta1985'
+
 # get tableau public data
 @st.cache_data
 def get_data():
-    profile = 'yuta1985'
+
     start = 0
     count = 50 # the number of get count is limited to 50
     data = []
@@ -23,8 +25,12 @@ def get_data():
             break
     return data
 
-data = get_data()
-data = pd.json_normalize(data)
+@st.cache_data
+def get_profile():
+    url = 'https://public.tableau.com/profile/api/{profile}'
+    res = requests.get(url_base)
+    json = res.json()
+    return json
 
 def search_keyword(string,keyword):
     if keyword in string:
@@ -36,10 +42,18 @@ def search_keyword(string,keyword):
 #with st.sidebar:
     #st.header("aa")
 
+# get data
+prof = get_profile()
+data = get_data()
+data = pd.json_normalize(data)
+
 # main design
 st.title("Tableau Pulbic Portfolio")
 
 st.metric(label="\# of vizzes", value=len(data), label_visibility="visible")
+st.metric(label="Following", value=prof['totalNumberOfFollowing'])
+st.metric(label="Followers", value=prof['totalNumberOfFollowers'])
+
 
 #st.write(data)
 
