@@ -96,11 +96,11 @@ with c1:
     st.metric('\# of MoM vizzes', len(mom))
     mom.apply(show_wb,axis=1)
 with c2:
-    st.text('WorkoutWednesday')
+    st.markdown('**WorkoutWednesday**')
     st.metric('\# of WoW vizzes', len(wow))
     wow.apply(show_wb,axis=1)
 with c3:
-    st.text('Others')
+    st.markdown('**Others**')
     st.metric('\# of other vizzes', len(otr))
     otr.apply(show_wb,axis=1)
 
