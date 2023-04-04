@@ -64,14 +64,14 @@ otr = data[
         ]
 with c1:
     st.subheader('MakeoverMonday')
-    st.metric('\# of MoM viz', len(mom))
+    st.metric('\# of MoM vizzes', len(mom))
     st.write(mom.title)
 with c2:
     st.subheader('WorkoutWednesday')
-    st.metric('\# of WoW viz', len(wow))
+    st.metric('\# of WoW vizzes', len(wow))
     st.write(wow.title)
 with c3:
     st.subheader('Others')
-    st.metric('\# of other viz', len(otr))
+    st.metric('\# of other vizzes', len(otr))
     st.write(otr.title)
 
