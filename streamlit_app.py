@@ -78,7 +78,10 @@ st.write()
 
 c1, c2, c3 = st.columns(3)
 mom = data[data['title'].apply(lambda x: search_keyword(x,'MoM'))]
-wow = data[data['title'].apply(lambda x: search_keyword(x,'WoW'))]
+wow = data[
+    (data['title'].apply(lambda x: search_keyword(x,'WoW'))])
+    |
+    (data['title'].apply(lambda x: search_keyword(x,'WOW'))])
 otr = data[
          ~(
              (data['title'].apply(lambda x: search_keyword(x,'MoM')))
