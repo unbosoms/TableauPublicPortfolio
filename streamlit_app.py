@@ -9,7 +9,7 @@ st.set_page_config(layout="wide")
 # get tableau public data
 @st.cache_data
 def get_data():
-    profile = st.secrets.PROFILE
+    profile = 'yuta1985'
     start = 0
     count = 50 # the number of get count is limited to 50
     data = []
