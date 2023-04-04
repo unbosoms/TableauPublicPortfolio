@@ -89,7 +89,8 @@ otr = data[
 with c1:
     st.subheader('MakeoverMonday')
     st.metric('\# of MoM vizzes', len(mom))
-    st.write(mom.title)
+    for row in mom:
+        st.write(row.title,'[link](https://public.tableau.com/app/profile/yuta1985/viz/{}/{})'.format(row['defaultViewRepoUrl']))
 with c2:
     st.subheader('WorkoutWednesday')
     st.metric('\# of WoW vizzes', len(wow))
