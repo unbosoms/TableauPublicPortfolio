@@ -92,7 +92,7 @@ def show_wb(data):
     st.write('['+data['title']+'](https://public.tableau.com/app/profile/yuta1985/viz/'+data['defaultViewRepoUrl']+')')
 
 with c1:
-    st.markdown('### MakeoverMonday')
+    st.markdown('**MakeoverMonday**')
     st.metric('\# of MoM vizzes', len(mom))
     mom.apply(show_wb,axis=1)
 with c2:
