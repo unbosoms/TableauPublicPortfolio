@@ -16,8 +16,8 @@ def get_data():
     count = 50 # the number of get count is limited to 50
     data = []
     while(True):
-        url_base = f'https://public.tableau.com/public/apis/workbooks?profileName={profile}&start={start}&count={count}&visibility=NON_HIDDEN'
-        res = requests.get(url_base)
+        url = f'https://public.tableau.com/public/apis/workbooks?profileName={profile}&start={start}&count={count}&visibility=NON_HIDDEN'
+        res = requests.get(url)
         json = res.json()
         start = json["next"]
         data += json["contents"]
@@ -28,7 +28,7 @@ def get_data():
 @st.cache_data
 def get_profile():
     url = 'https://public.tableau.com/profile/api/{profile}'
-    res = requests.get(url_base)
+    res = requests.get(url)
     json = res.json()
     return json
 
