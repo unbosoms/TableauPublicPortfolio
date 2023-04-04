@@ -4,7 +4,7 @@ import json
 import requests
 from streamlit_elements import nivo 
 
-st.set_page_config(layout="wide")
+#st.set_page_config(layout="wide")
 
 profile = 'yuta1985'
 
@@ -92,15 +92,15 @@ def show_wb(data):
     st.write('['+data['title']+'](https://public.tableau.com/app/profile/yuta1985/viz/'+data['defaultViewRepoUrl']+')')
 
 with c1:
-    st.subheader('MakeoverMonday')
+    st.text('MakeoverMonday')
     st.metric('\# of MoM vizzes', len(mom))
     mom.apply(show_wb,axis=1)
 with c2:
-    st.subheader('WorkoutWednesday')
+    st.text('WorkoutWednesday')
     st.metric('\# of WoW vizzes', len(wow))
     wow.apply(show_wb,axis=1)
 with c3:
-    st.subheader('Others')
+    st.text('Others')
     st.metric('\# of other vizzes', len(otr))
     otr.apply(show_wb,axis=1)
 
