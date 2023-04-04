@@ -88,8 +88,8 @@ otr = data[
         ]
 
 def show_wb(data):
-    st.write('https://public.tableau.com/thumb/views/'+data['defaultViewRepoUrl'])
-    st.image('https://public.tableau.com/thumb/views/'+data['defaultViewRepoUrl'])
+    st.write('https://public.tableau.com/thumb/views/'+data['workbookRepoUrl']+'/'+data['defaultViewName'])
+    st.image('https://public.tableau.com/thumb/views/'+data['workbookRepoUrl']+'/'+data['defaultViewName'])
     st.write('['+data['title']+'](https://public.tableau.com/app/profile/yuta1985/viz/'+data['defaultViewRepoUrl']+')')
 
 with c1:
