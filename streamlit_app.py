@@ -50,16 +50,18 @@ data = pd.json_normalize(data)
 # main design
 st.title("Tableau Pulbic Portfolio")
 
-c1, c2, c3, c4, c5, c6 = st.columns(6)
+c1, c2 = st.columns([1,4])
 with c1:
     st.image(prof['avatarUrl'])
 with c2:
-    st.metric(label="\# of vizzes", value=len(data), label_visibility="visible")
-with c3:
-    st.metric(label="Following", value=prof['totalNumberOfFollowing'])
-with c4:
-    st.metric(label="Followers", value=prof['totalNumberOfFollowers'])
-
+    st.write(prof['name'])
+    c2_1, c2_2, c2_3 = st.columns(3)
+    with c2_1:
+        st.metric(label="\# of vizzes", value=len(data), label_visibility="visible")
+    with c2_2:
+        st.metric(label="Following", value=prof['totalNumberOfFollowing'])
+    with c2_3:
+        st.metric(label="Followers", value=prof['totalNumberOfFollowers'])
 
 #st.write(data)
 
