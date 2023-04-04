@@ -27,7 +27,7 @@ def get_data():
 
 @st.cache_data
 def get_profile():
-    url = 'https://public.tableau.com/profile/api/{profile}'
+    url = f'https://public.tableau.com/profile/api/{profile}'
     res = requests.get(url)
     json = res.json()
     return json
