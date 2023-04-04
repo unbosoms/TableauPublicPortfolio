@@ -88,7 +88,6 @@ otr = data[
         ]
 
 def show_wb(data):
-    st.write('https://public.tableau.com/thumb/views/'+data['workbookRepoUrl']+'/'+data['defaultViewName'])
     st.image('https://public.tableau.com/thumb/views/'+data['workbookRepoUrl']+'/'+data['defaultViewName'])
     st.write('['+data['title']+'](https://public.tableau.com/app/profile/yuta1985/viz/'+data['defaultViewRepoUrl']+')')
 
@@ -99,9 +98,9 @@ with c1:
 with c2:
     st.subheader('WorkoutWednesday')
     st.metric('\# of WoW vizzes', len(wow))
-    st.write(wow.title)
+    wow.apply(show_wb,axis=1)
 with c3:
     st.subheader('Others')
     st.metric('\# of other vizzes', len(otr))
-    st.write(otr.title)
+    otr.apply(show_wb,axis=1)
 
