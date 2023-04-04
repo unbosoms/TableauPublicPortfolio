@@ -54,7 +54,7 @@ c1, c2 = st.columns([1,4])
 with c1:
     st.image(prof['avatarUrl'])
 with c2:
-    st.write(prof['name'])
+    st.header(prof['name'])
     c2_1, c2_2, c2_3 = st.columns(3)
     with c2_1:
         st.metric(label="\# of vizzes", value=len(data), label_visibility="visible")
