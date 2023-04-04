@@ -89,7 +89,7 @@ otr = data[
 with c1:
     st.subheader('MakeoverMonday')
     st.metric('\# of MoM vizzes', len(mom))
-    mom.apply(lambda x: st.write(x['title']+'[Link] (https://public.tableau.com/app/profile/yuta1985/viz/'+x['defaultViewRepoUrl']+')'),axis=1)
+    mom.apply(lambda x: st.write(x['title']+'[Link](https://public.tableau.com/app/profile/yuta1985/viz/'+x['defaultViewRepoUrl']+')'),axis=1)
 with c2:
     st.subheader('WorkoutWednesday')
     st.metric('\# of WoW vizzes', len(wow))
