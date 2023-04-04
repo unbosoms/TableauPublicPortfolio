@@ -14,6 +14,16 @@ st.set_page_config(layout="wide")
 
 PROFILE = 'yuta1985'
 
+if 'mom_limit' not in st.session_state:
+    st.session_state.mom_limit=5
+if 'wow_limit' not in st.session_state:
+    st.session_state.wow_limit=5
+if 'otr_limit' not in st.session_state:
+    st.session_state.otr_limit=5
+if 'ser_limit' not in st.session_state:
+    st.session_state.ser_limit=5
+
+
 # get tableau public data
 @st.cache_data
 def get_data():
@@ -52,6 +62,18 @@ def search_keyword(string,keyword):
     else:
         return False
 
+def show_more_mom():
+    st.session_state.mom_limit += 5
+
+def show_more_wow():
+    st.session_state.wow_limit += 5
+
+def show_more_otr():
+    st.session_state.otr_limit += 5
+
+def show_more_ser():
+    st.session_state.ser_limit += 5
+
 ########################
 # get data
 ########################
@@ -63,12 +85,16 @@ data = pd.json_normalize(data)
 mom = data[
         (data['title'].apply(lambda x: search_keyword(x,'MoM')))
         |
+        (data['title'].apply(lambda x: search_keyword(x,'mom')))
+        |
         (data['title'].apply(lambda x: search_keyword(x,'MOM')))
         |
         (data['title'].apply(lambda x: search_keyword(x,'MakeoverMonday')))
         ]
 wow = data[
         (data['title'].apply(lambda x: search_keyword(x,'WoW')))
+        |
+        (data['title'].apply(lambda x: search_keyword(x,'wow')))
         |
         (data['title'].apply(lambda x: search_keyword(x,'WOW')))
         |
@@ -78,11 +104,15 @@ otr = data[
          ~(
              (data['title'].apply(lambda x: search_keyword(x,'MoM')))
              |
+             (data['title'].apply(lambda x: search_keyword(x,'mom')))
+             |
              (data['title'].apply(lambda x: search_keyword(x,'MOM')))
              |
              (data['title'].apply(lambda x: search_keyword(x,'MakeoverMonday')))
              |
              (data['title'].apply(lambda x: search_keyword(x,'WoW')))
+             |
+             (data['title'].apply(lambda x: search_keyword(x,'wow')))
              |
              (data['title'].apply(lambda x: search_keyword(x,'WOW')))
              |
@@ -93,7 +123,7 @@ otr = data[
 ########################
 # main design
 ########################
-st.title("Tableau Pulbic Portfolio")
+st.title("My Tableau Pulbic Portfolio")
 
 ########################
 # profile & summary
@@ -122,8 +152,6 @@ st.write()
 
 ########################
 # MakeoverMonday
-if 'mom_limit' not in st.session_state:
-    st.session_state.mom_limit=5
 num_of_mom = len(mom)
 st.header(f'MakeoverMonday ({num_of_mom} vizzes)')
 st.write('')
@@ -133,15 +161,12 @@ for i, chunk in enumerate(chunks(list(mom[:st.session_state.mom_limit].itertuple
     for c, col in zip(chunk, cols):
         with col:
             show_wb(c)
-def show_more(string):
-    st.session_state[string] += 5
 st.write('')
-st.button('Show more', on_click=show_more('mom_limit'),key=1)
+if st.session_state.mom_limit < len(mom):
+    st.button("Show more MoM vizzes", on_click=show_more_mom, key=1, type='primary')
 
 ########################
 # WorkoutWednesday
-if 'wow_limit' not in st.session_state:
-    st.session_state.wow_limit=5
 num_of_wow = len(wow)
 st.header(f'WorkoutWednesday({num_of_wow} vizzes)')
 st.write('')
@@ -151,15 +176,12 @@ for i, chunk in enumerate(chunks(list(wow[:st.session_state.wow_limit].itertuple
     for c, col in zip(chunk, cols):
         with col:
             show_wb(c)
-def show_more(string):
-    st.session_state[string] += 5
 st.write('')
-st.button('Show more', on_click=show_more('wow_limit'),key=2)
+if st.session_state.wow_limit < len(wow):
+    st.button("Show more WoW vizzes", on_click=show_more_wow, key=2, type='primary')
 
 ########################
 # Others
-if 'otr_limit' not in st.session_state:
-    st.session_state.otr_limit=5
 num_of_otr = len(otr)
 st.header(f'Others({num_of_otr} vizzes)')
 st.write('')
@@ -169,10 +191,9 @@ for i, chunk in enumerate(chunks(list(otr[:st.session_state.otr_limit].itertuple
     for c, col in zip(chunk, cols):
         with col:
             show_wb(c)
-def show_more(string):
-    st.session_state[string] += 5
 st.write('')
-st.button('Show more', on_click=show_more('otr_limit'),key=3)
+if st.session_state.otr_limit < len(otr):
+    st.button('Show more other vizzes', on_click=show_more_otr, key=3, type='primary')
 
 ########################
 # Search
@@ -182,17 +203,15 @@ if keyword == '':
     st.write('☝️ Please input search keyword')
 else:
     ser = data[data['title'].apply(lambda x: keyword in x)]
-    if 'ser_limit' not in st.session_state:
-        st.session_state.ser_limit=5
     num_of_ser = len(ser)
-    st.write('')
+    st.write(f'{num_of_ser} vizzes hit.')
     
     for i, chunk in enumerate(chunks(list(ser[:st.session_state.ser_limit].itertuples()),NUM_COLS)):
         cols = st.columns(NUM_COLS, gap="large")
         for c, col in zip(chunk, cols):
             with col:
                 show_wb(c)
-    def show_more(string):
-        st.session_state[string] += 5
     st.write('')
-    st.button('Show more', on_click=show_more('ser_limit'),key=4)
+    if st.session_state.ser_limit < len(ser):
+        st.button('Show more vizzes', on_click=show_more_ser, key=4, type='primary')
+
