@@ -63,16 +63,16 @@ def search_keyword(string,keyword):
         return False
 
 def show_more_mom():
-    st.session_state.mom_limit += 5
+    st.session_state.mom_limit += 10
 
 def show_more_wow():
-    st.session_state.wow_limit += 5
+    st.session_state.wow_limit += 10
 
 def show_more_otr():
-    st.session_state.otr_limit += 5
+    st.session_state.otr_limit += 10
 
 def show_more_ser():
-    st.session_state.ser_limit += 5
+    st.session_state.ser_limit += 10
 
 ########################
 # get data
