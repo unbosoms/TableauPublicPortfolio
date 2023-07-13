@@ -123,7 +123,7 @@ otr = data[
 ########################
 # main design
 ########################
-st.title("My Tableau Pulbic Portfolio")
+st.title("My Tableau Public Portfolio")
 
 ########################
 # profile & summary
